@@ -13,6 +13,7 @@ import model.Usuario;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -134,14 +135,67 @@ public class FrmManteProd extends JFrame {
 	}
 
 	void llenaCombo() {
-		
+
 	}
 	
 	void listado() {
 		
+		//**********************************LISTA*******************************//
+		// 1. especificar la conexion de BD - DAOFactory
+		EntityManagerFactory fabrica4 = Persistence.createEntityManagerFactory("mysql");
+		
+		// 2. Obtener el DAO
+		EntityManager em4 = fabrica4.createEntityManager();
+		
+		// listado de los usuarios
+		
+		TypedQuery<Producto> query = em4.createQuery("Select p from Producto p",Producto.class);
+		
+		List<Producto> lstProducto = query.getResultList();
+		
+		System.out.println("Cantidad de usuarios : "+lstProducto.size());
+		
+		if (lstProducto.size()==0) {
+			System.out.println("Listado vacio");
+		}else {
+			System.out.println("Listado de usuarios");
+			for(Producto u: lstProducto) {
+				System.out.println(">>>> "+u);
+			}
+		}
+
+		
 	}
 	
 	void registrar() {
+		//**********************************REGISTRAA*******************************//
+		
+		// 1. especificar la conexion de BD - DAOFactory
+		EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("mysql");
+		
+		// 2. Obtener el DAO
+		EntityManager em = fabrica.createEntityManager();
+		
+		// procesos.. registrar un nuevo producto
+		Producto p= new Producto();
+		p.setProducto("P0032");
+		p.setDescripcion("Papitas");
+		p.setStock(10);
+		p.setPrecio(1.0);
+		p.setCategoria(6);
+		p.setEstado(1); 
+			
+		// reg, act, elim -> Transacciones
+		try {
+			em.getTransaction().begin(); 
+			em.persist(p);	//registrar 
+			em.getTransaction().commit(); 
+			System.out.println("Registro OK"); 
+		} catch (Exception e) {
+			System.out.println("Error : "+e.getClass().getTypeName()); 
+		}
+		em.close(); 
+		//termiando
 		
 
 	}
